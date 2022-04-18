@@ -7,6 +7,11 @@ export const registrationValidator = [
   check("lastname", "wrong lastname").notEmpty().isString(),
 ];
 
-export const resetActivationUserMail = [
+export const resetActivationUserMailValidator = [
   check("email", "wrong email").isEmail(),
+];
+
+export const loginValidator = [
+  check("email", "wrong email").isEmail(),
+  check("password", "wrong password").notEmpty().isString(),
 ];

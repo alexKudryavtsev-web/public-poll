@@ -4,8 +4,10 @@ import { v4 } from "uuid";
 
 import UserDto from "../dto/user.dto.js";
 import ApiError from "../exceptions/api.error.js";
+import RefreshTokenModel from "../models/refreshToken.model.js";
 import UserModel from "../models/user.model.js";
 import EmailService from "./email.service.js";
+import TokenService from "./token.service.js";
 
 class AuthService {
   async registration(email, firstname, lastname, password) {
@@ -70,6 +72,55 @@ class AuthService {
 
     user.isActivated = true;
     await user.save();
+  }
+
+  async login(email, password) {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      throw ApiError.BadRequest(`User with ${email} email not found`);
+    }
+
+    const comparedPassword = await bcrypt.compare(password, user.password);
+
+    if (!comparedPassword) {
+      throw ApiError.BadRequest("wrong password");
+    }
+
+    const userDto = new UserDto(user);
+
+    const tokens = await TokenService.generateTokens({ ...userDto });
+
+    await TokenService.saveRefreshToken(userDto.id, tokens.refreshToken);
+
+    return {
+      user: userDto,
+      ...tokens,
+    };
+  }
+
+  async logout(refreshToken) {
+    await TokenService.removeRefreshToken(refreshToken);
+  }
+
+  async refresh(refreshToken) {
+    const dataFromToken = await TokenService.verifyRefreshToken(refreshToken);
+    const dataFromDB = await RefreshTokenModel.findOne({ refreshToken });
+
+    console.log(dataFromDB, dataFromToken);
+
+    if (!dataFromToken || !dataFromDB) {
+      throw ApiError.BadRequest("invalid refresh token");
+    }
+
+    const user = await UserModel.findById(dataFromDB.userId);
+    const userDto = new UserDto(user);
+
+    const newAccessToken = await TokenService.generateAccessToken({
+      ...userDto,
+    });
+
+    return newAccessToken;
   }
 }
 
