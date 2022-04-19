@@ -6,7 +6,7 @@ import RefreshTokenModel from "../models/refreshToken.model.js";
 class TokenService {
   async generateTokens(payload) {
     const accessToken = jwt.sign(payload, config.get("ACCESS_SECRET"), {
-      expiresIn: "15m",
+      expiresIn: "1h",
     });
     const refreshToken = jwt.sign(payload, config.get("REFRESH_SECRET"), {
       expiresIn: "30d",
@@ -20,7 +20,7 @@ class TokenService {
 
   async generateAccessToken(payload) {
     return jwt.sign(payload, config.get("ACCESS_SECRET"), {
-      expiresIn: "15m",
+      expiresIn: "1h",
     });
   }
 

@@ -107,8 +107,6 @@ class AuthService {
     const dataFromToken = await TokenService.verifyRefreshToken(refreshToken);
     const dataFromDB = await RefreshTokenModel.findOne({ refreshToken });
 
-    console.log(dataFromDB, dataFromToken);
-
     if (!dataFromToken || !dataFromDB) {
       throw ApiError.BadRequest("invalid refresh token");
     }
