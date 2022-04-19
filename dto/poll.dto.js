@@ -6,6 +6,7 @@ class PollDto {
   layout;
   date;
   isOpened;
+  visitedCount;
 
   constructor(model) {
     this.id = model._id;
@@ -17,7 +18,8 @@ class PollDto {
     }));
     this.date = model.date;
     this.isOpened = model.isOpened;
-    this.link = `${config.get("API_URL")}/t/${model.link}`;
+    this.visitedCount = model.visitedCount;
+    this.link = `${config.get("REDIRECT_URL")}/${model.code}`;
   }
 }
 

@@ -24,9 +24,13 @@ const pollSchema = new Schema({
     type: Boolean,
     default: true,
   },
-  link: {
+  code: {
     type: String,
     default: shortid.generate,
+  },
+  visitedCount: {
+    type: Number,
+    default: 0,
   },
 });
 

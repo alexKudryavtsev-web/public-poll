@@ -1,3 +1,4 @@
+import config from "config";
 import PollDto from "../dto/poll.dto.js";
 import ApiError from "../exceptions/api.error.js";
 import PollModel from "../models/poll.model.js";
@@ -37,6 +38,19 @@ class LayoutSevice {
     }
     const pollDto = new PollDto(poll);
     return pollDto;
+  }
+
+  async visitePoll(code) {
+    const poll = await PollModel.findOne({ code });
+    if (!poll) {
+      throw ApiError.BadRequest(`wrong link`);
+    }
+
+    poll.visitedCount++;
+    await poll.save();
+
+    const linkInClient = `${config.get("CLIENT_URL")}/polls/${code}`;
+    return linkInClient;
   }
 }
 
