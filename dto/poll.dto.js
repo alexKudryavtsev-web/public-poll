@@ -1,7 +1,7 @@
 import config from "config";
 
 class PollDto {
-  id;
+  pollId;
   userId;
   layout;
   date;
@@ -9,7 +9,7 @@ class PollDto {
   visitedCount;
 
   constructor(model) {
-    this.id = model._id;
+    this.pollId = model._id;
     this.userId = model.userId;
     this.layout = model.layout.map((element) => ({
       question: element.question,

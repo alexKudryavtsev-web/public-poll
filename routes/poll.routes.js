@@ -21,10 +21,6 @@ pollRouter.post(
   pollController.closePoll
 );
 pollRouter.get("/readPolls", authMiddleware, pollController.readPolls);
-pollRouter.get(
-  "/pollDetails/:id",
-  authMiddleware,
-  pollController.readPollDetails
-);
+pollRouter.get("/pollDetails/:id", pollController.readPollDetails);
 
 export default pollRouter;
