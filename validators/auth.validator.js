@@ -15,3 +15,10 @@ export const loginValidator = [
   check("email", "wrong email").isEmail(),
   check("password", "wrong password").notEmpty().isString(),
 ];
+
+export const resetPasswordValidator = [check("email", "wrong email").isEmail()];
+
+export const activateResetPasswordValidator = [
+  check("newPassword").isLength({ min: 6 }),
+  check("activationResetPasswordLink").notEmpty().isString(),
+];

@@ -36,6 +36,20 @@ class EmailService {
       `,
     });
   }
+
+  sendActivationResetPasswordMail(to, firstname, link) {
+    this.transporter.sendMail({
+      from: config.get("SMTP_USER"),
+      to,
+      subject: `Reset password activation`,
+      html: `
+      <div>
+      <h2>Hello, ${firstname}. To activate reset password follow the link</h2>
+      <a style="font-family: Consolas, 'Courier New', monospace; text-decoration: none; appearance: button;cursor:pointer;" href="${link}">activate</a>
+      </div>
+      `,
+    });
+  }
 }
 
 export default new EmailService();

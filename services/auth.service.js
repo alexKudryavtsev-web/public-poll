@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import UserDto from "../dto/user.dto.js";
 import ApiError from "../exceptions/api.error.js";
 import RefreshTokenModel from "../models/refreshToken.model.js";
+import ResetPasswordTokenModel from "../models/resetPasswordToken.model.js";
 import UserModel from "../models/user.model.js";
 import EmailService from "./email.service.js";
 import TokenService from "./token.service.js";
@@ -119,6 +120,71 @@ class AuthService {
     });
 
     return newAccessToken;
+  }
+
+  async resetPassword(email) {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      throw ApiError.BadRequest(`User with ${email} email not found`);
+    }
+
+    const activationResetPasswordLink = v4();
+    user.activationResetPasswordLink = activationResetPasswordLink;
+
+    await user.save();
+
+    const userDto = new UserDto(user);
+
+    const resetPasswordToken = await TokenService.generateResetPasswordToken({
+      ...userDto,
+    });
+
+    await TokenService.saveResetPasswordToken(userDto.id, resetPasswordToken);
+
+    EmailService.sendActivationResetPasswordMail(
+      email,
+      user.firstname,
+      `${config.get(
+        "API_URL"
+      )}/activateResetPassword/${activationResetPasswordLink}`
+    );
+
+    await RefreshTokenModel.deleteOne({ userId: user._id });
+
+    return userDto;
+  }
+
+  async activateResetPassword(newPassword, activationResetPasswordLink) {
+    const user = await UserModel.findOne({ activationResetPasswordLink });
+
+    if (!user) {
+      throw ApiError.BadRequest(`wrong activation reset password link`);
+    }
+
+    const tokenFromDB = await ResetPasswordTokenModel.findOne({
+      userId: user._id,
+    });
+
+    const dataFromToken = await TokenService.verifyResetPasswordToken(
+      tokenFromDB.resetPasswordToken
+    );
+
+    if (!dataFromToken) {
+      throw ApiError.BadRequest(`token not found or expired (1h valid)`);
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 3);
+    user.password = hashPassword;
+    user.activationResetPasswordLink = "";
+
+    await user.save();
+
+    const userDto = new UserDto(user);
+
+    await ResetPasswordTokenModel.deleteOne({ _id: tokenFromDB._id });
+
+    return userDto;
   }
 }
 

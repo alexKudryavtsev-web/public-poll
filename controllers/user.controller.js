@@ -104,6 +104,43 @@ class UserController {
       next(e);
     }
   }
+
+  async resetPassword(req, res, next) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        throw ApiError.BadRequest("wrong form");
+      }
+
+      const { email } = req.body;
+
+      const userData = await AuthService.resetPassword(email);
+
+      return res.json(userData);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async activateResetPassword(req, res, next) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        throw ApiError.BadRequest("wrong form");
+      }
+
+      const { newPassword, activationResetPasswordLink } = req.body;
+
+      const userData = await AuthService.activateResetPassword(
+        newPassword,
+        activationResetPasswordLink
+      );
+
+      return res.json(userData);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export default new UserController();
