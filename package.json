@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "server": "nodemon app.js",
-    "dev": "concurrently \"npm run server\" \"npm run start --prefix client\""
+    "dev": "concurrently \"npm run server\""
   },
   "author": "alexKudryavtsev-web",
   "license": "ISC",

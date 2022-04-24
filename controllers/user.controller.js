@@ -122,7 +122,7 @@ class UserController {
     }
   }
 
-  async activateResetPassword(req, res, next) {
+  async setNewPassword(req, res, next) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -131,7 +131,7 @@ class UserController {
 
       const { newPassword, activationResetPasswordLink } = req.body;
 
-      const userData = await AuthService.activateResetPassword(
+      const userData = await AuthService.setNewPassword(
         newPassword,
         activationResetPasswordLink
       );

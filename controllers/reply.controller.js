@@ -23,12 +23,7 @@ class ReplyController {
 
   async readReplies(req, res, next) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        throw ApiError.BadRequest("wrong form");
-      }
-
-      const { id } = req.params;
+      const { id: pollId } = req.params;
       const { userId } = req.user;
 
       const repliesData = await ReplyService.readReplies(userId, pollId);

@@ -11,5 +11,3 @@ export const createPollValidator = [
     .custom((input) => input.length >= 2),
   check("title").notEmpty().isString(),
 ];
-
-export const closePollValidator = [check("pollId").notEmpty().isString()];

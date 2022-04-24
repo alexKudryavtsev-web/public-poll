@@ -2,23 +2,19 @@ import { Router } from "express";
 
 import ReplyController from "../controllers/reply.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
-import {
-  createReplyValidator,
-  readRepliesValidator,
-} from "../validators/reply.validator.js";
+import { createReplyValidator } from "../validators/reply.validator.js";
 
 const replyRouter = new Router();
 
 replyRouter.post(
-  "/createReply",
+  "/create-reply",
   createReplyValidator,
   ReplyController.createReply
 );
 
 replyRouter.get(
-  "/readReplies",
+  "/read-replies/:id",
   authMiddleware,
-  ...readRepliesValidator,
   ReplyController.readReplies
 );
 

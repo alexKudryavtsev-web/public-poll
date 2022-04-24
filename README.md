@@ -12,16 +12,16 @@
 **_Модели БД:_**
 
 1. User
-1. Poll Layout
-1. Poll Reply
-1. Login Token
-1. Reset Password Token
+2. Poll
+3. Reply
+4. Refresh Token
+5. Reset Password Token
 
 **_API:_**
 
 1. Auth
-1. Layout
-1. Reply
+2. Poll
+3. Reply
 
 **_Stack (Backend):_**
 

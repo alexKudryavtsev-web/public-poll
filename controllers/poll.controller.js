@@ -24,14 +24,9 @@ class LayoutController {
 
   async closePoll(req, res, next) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        throw ApiError.BadRequest("wrong form");
-      }
+      const { id } = req.params;
 
-      const { pollId } = req.body;
-
-      const pollData = await PollService.closePoll(pollId);
+      const pollData = await PollService.closePoll(id);
 
       return res.json(pollData);
     } catch (e) {

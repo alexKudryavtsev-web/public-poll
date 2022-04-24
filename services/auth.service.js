@@ -34,7 +34,7 @@ class AuthService {
     EmailService.sendActivationUserMail(
       email,
       firstname,
-      `${config.get("API_URL")}/auth/activateUser/${activationUserLink}`
+      `${config.get("API_URL")}/auth/activate-user/${activationUserLink}`
     );
 
     const userDto = new UserDto(user);
@@ -145,9 +145,7 @@ class AuthService {
     EmailService.sendActivationResetPasswordMail(
       email,
       user.firstname,
-      `${config.get(
-        "API_URL"
-      )}/activateResetPassword/${activationResetPasswordLink}`
+      `${config.get("API_URL")}/set-new-password/${activationResetPasswordLink}`
     );
 
     await RefreshTokenModel.deleteOne({ userId: user._id });
@@ -155,7 +153,7 @@ class AuthService {
     return userDto;
   }
 
-  async activateResetPassword(newPassword, activationResetPasswordLink) {
+  async setNewPassword(newPassword, activationResetPasswordLink) {
     const user = await UserModel.findOne({ activationResetPasswordLink });
 
     if (!user) {

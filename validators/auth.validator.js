@@ -18,7 +18,7 @@ export const loginValidator = [
 
 export const resetPasswordValidator = [check("email", "wrong email").isEmail()];
 
-export const activateResetPasswordValidator = [
+export const setNewPasswordValidator = [
   check("newPassword").isLength({ min: 6 }),
   check("activationResetPasswordLink").notEmpty().isString(),
 ];

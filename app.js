@@ -14,7 +14,7 @@ import errorMiddleware from "./middleware/error.middleware.js";
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: config.get("CLIENT_URL") }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);

@@ -1,9 +1,8 @@
 import { Router } from "express";
 
 import UserController from "../controllers/user.controller.js";
-import authMiddleware from "../middleware/auth.middleware.js";
 import {
-  activateResetPasswordValidator,
+  setNewPasswordValidator,
   loginValidator,
   registrationValidator,
   resetActivationUserMailValidator,
@@ -17,9 +16,9 @@ authRouter.post(
   registrationValidator,
   UserController.registration
 );
-authRouter.get("/activateUser/:link", UserController.activateUser);
+authRouter.get("/activate-user/:link", UserController.activateUser);
 authRouter.post(
-  "/resetActivationUserMail",
+  "/reset-activation-user-mail",
   resetActivationUserMailValidator,
   UserController.resetActivationUserMail
 );
@@ -27,17 +26,16 @@ authRouter.post(
 authRouter.post("/login", loginValidator, UserController.login);
 authRouter.post("/logout", UserController.logout);
 authRouter.get("/refresh", UserController.refresh);
-authRouter.post("/test", authMiddleware, (req, res) => res.json(req.user));
 
 authRouter.post(
-  "/resetPassword",
+  "/reset-password",
   resetPasswordValidator,
   UserController.resetPassword
 );
 authRouter.post(
-  "/activateResetPassword",
-  activateResetPasswordValidator,
-  UserController.activateResetPassword
+  "/set-new-password",
+  setNewPasswordValidator,
+  UserController.setNewPassword
 );
 
 export default authRouter;

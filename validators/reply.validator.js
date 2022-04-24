@@ -7,7 +7,3 @@ export const createReplyValidator = [
     .isObject()
     .custom((value) => Object.keys(value).length !== 0),
 ];
-
-export const readRepliesValidator = [
-  check("pollId", "wrong pull id").notEmpty().isString(),
-];
