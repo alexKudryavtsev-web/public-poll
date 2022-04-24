@@ -28,7 +28,7 @@ class ReplyController {
         throw ApiError.BadRequest("wrong form");
       }
 
-      const { pollId } = req.body;
+      const { id } = req.params;
       const { userId } = req.user;
 
       const repliesData = await ReplyService.readReplies(userId, pollId);

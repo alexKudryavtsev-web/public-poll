@@ -7,6 +7,7 @@ class PollDto {
   date;
   isOpened;
   visitedCount;
+  title;
 
   constructor(model) {
     this.pollId = model._id;
@@ -16,6 +17,7 @@ class PollDto {
       variants: element.variants,
       id: element._id,
     }));
+    this.title = model.title;
     this.date = model.date;
     this.isOpened = model.isOpened;
     this.visitedCount = model.visitedCount;
