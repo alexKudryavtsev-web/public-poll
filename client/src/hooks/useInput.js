@@ -7,9 +7,14 @@ function useInput(initialValue = "") {
     setValue(e.target.value);
   }
 
+  function clear() {
+    setValue("");
+  }
+
   return {
     value,
     onChange,
+    clear,
   };
 }
 

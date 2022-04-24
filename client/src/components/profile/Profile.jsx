@@ -38,7 +38,14 @@ function Profile() {
 
   if (!polls) {
     return (
-      <Center position="absolute" top={0} width="100vw" height="100vh" left="0">
+      <Center
+        position="absolute"
+        top={0}
+        width="100vw"
+        height="100vh"
+        zIndex={-100}
+        left="0"
+      >
         <Spinner />
       </Center>
     );
