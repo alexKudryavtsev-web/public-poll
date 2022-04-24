@@ -9,12 +9,13 @@ import {
 } from "@chakra-ui/react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Logo from "../logo/Logo.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../contexts/AuthContext.js";
 import useHttp from "../../hooks/useHttp.js";
 
 function MainHeader({ isAuth, ...props }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const { request } = useHttp();
 
@@ -28,8 +29,9 @@ function MainHeader({ isAuth, ...props }) {
 
   async function logoutBtnHandler() {
     try {
-      await request("api/auth/logout", "POST");
+      await request("/api/auth/logout", "POST");
       auth.logout();
+      navigate("/");
     } catch (e) {}
   }
 
@@ -42,13 +44,20 @@ function MainHeader({ isAuth, ...props }) {
       padding={3}
       bg="teal.500"
       color="white"
+      onClick={() => onClose()}
       {...props}
     >
       <Flex as={Link} to="/" align="center" mr={5}>
         <Logo />
       </Flex>
 
-      <Box display={{ base: "block", md: "none" }} onClick={menuToggleHandle}>
+      <Box
+        display={{ base: "block", md: "none" }}
+        onClick={(e) => {
+          e.stopPropagation();
+          menuToggleHandle();
+        }}
+      >
         <GiHamburgerMenu />
       </Box>
 

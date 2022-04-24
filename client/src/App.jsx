@@ -4,7 +4,6 @@ import AuthContext from "./contexts/AuthContext.js";
 import useAuth from "./hooks/useAuth.js";
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from "./routes";
 import MainHeader from "./components/mainHeader/MainHeader.jsx";
-import { useEffect } from "react";
 
 function RoutesComponent({ isAuth }) {
   const routes = useRoutes(isAuth ? PRIVATE_ROUTES : PUBLIC_ROUTES);

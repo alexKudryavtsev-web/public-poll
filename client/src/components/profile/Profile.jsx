@@ -9,6 +9,8 @@ import {
   Link,
   VStack,
   Heading,
+  Center,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Link as NavLink } from "react-router-dom";
@@ -19,11 +21,11 @@ function Profile() {
   const auth = useContext(AuthContext);
   const { request } = useHttp();
 
-  const [polls, setPolls] = useState([]);
+  const [polls, setPolls] = useState(null);
 
   const fetchPolls = useCallback(async () => {
     try {
-      const response = await request("/api/poll/readPolls", "GET", null, {
+      const response = await request("/api/poll/read-polls", "GET", null, {
         Authorization: `Bearer ${auth.token}`,
       });
       setPolls(response);
@@ -33,6 +35,14 @@ function Profile() {
   useEffect(() => {
     fetchPolls();
   }, [fetchPolls]);
+
+  if (!polls) {
+    return (
+      <Center position="absolute" top={0} width="100vw" height="100vh" left="0">
+        <Spinner />
+      </Center>
+    );
+  }
 
   return (
     <VStack align="stretch">

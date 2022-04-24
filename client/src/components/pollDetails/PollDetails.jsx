@@ -1,52 +1,47 @@
-import {
-  Box,
-  Heading,
-  Link,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Tr,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Center, Spinner, VStack } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import AuthContext from "../../contexts/AuthContext.js";
 import useHttp from "../../hooks/useHttp.js";
-import formatDate from "../../utils/formatDate.js";
-import formatQuestion from "../../utils/formatQuestion.js";
+
+import PollDetailsMetaData from "../pollDetailsMetaData/PollDetailsMetaData.jsx";
+import PollDetailsRepyData from "../pollDetailsReplyData/PollDetailsRepyData.jsx";
 
 function PollDetails() {
   const { id } = useParams();
-  const { request, isLoading, error } = useHttp();
+  const { request, isLoading } = useHttp();
   const auth = useContext(AuthContext);
 
   const [details, setDetails] = useState(null);
+  const [replies, setReplies] = useState(null);
 
+  async function closePollBtnHandler() {
+    try {
+      await request(`/api/poll/close-poll/${id}`, "POST", null, {
+        Authorization: `Bearer ${auth.token}`,
+      });
+      setDetails({ ...details, isOpened: false });
+    } catch (e) {}
+  }
   const fetchReply = useCallback(async () => {
     try {
-      console.log("HERE, fetch", id);
       const response = await request(
-        `/api/reply/readReplies/${id}`,
+        `/api/reply/read-replies/${id}`,
         "GET",
         null,
         {
           Authorization: `Bearer ${auth.token}`,
         }
       );
-      console.log("HERES");
-    } catch (e) {
-      console.log(e);
-    }
+      setReplies(response);
+    } catch (e) {}
   }, []);
 
   const fetchPollDetails = useCallback(async () => {
     try {
       const response = await request(
-        `/api/poll/pollDetails/${id}`,
+        `/api/poll/poll-details/${id}`,
         "GET",
         null,
         {
@@ -65,40 +60,31 @@ function PollDetails() {
     fetchReply();
   }, [fetchReply]);
 
-  if (isLoading || !details) {
-    return <Spinner />;
+  if (isLoading || !details || !replies) {
+    return (
+      <Center
+        position="absolute"
+        top={0}
+        width="100vw"
+        height="100vh"
+        zIndex={-100}
+        left={0}
+      >
+        <Spinner />
+      </Center>
+    );
   }
   return (
-    <VStack align="stretch">
-      <Box alignSelf="center">
-        <Heading>{formatQuestion(details?.title)}</Heading>
-      </Box>
-      <TableContainer>
-        <Table variant="simple">
-          <Tbody>
-            <Tr>
-              <Th>Date of created</Th>
-              <Th>{formatDate(details.date)}</Th>
-            </Tr>
-            <Tr>
-              <Th>Link to repost</Th>
-              <Td>
-                <Link href={details.link} color="blue.300" isExternal>
-                  {details.link}
-                </Link>
-              </Td>
-            </Tr>
-            <Tr>
-              <Th>Status</Th>
-              <Th>{details.isOpened ? "open" : "close"}</Th>
-            </Tr>
-            <Tr>
-              <Th>Watch poll</Th>
-              <Th>{details.visitedCount}</Th>
-            </Tr>
-          </Tbody>
-        </Table>
-      </TableContainer>
+    <VStack align="stretch" paddingBottom={10}>
+      <PollDetailsMetaData details={details} />
+      {details.isOpened && (
+        <Box>
+          <Button onClick={closePollBtnHandler} colorScheme="blue">
+            close poll
+          </Button>
+        </Box>
+      )}
+      <PollDetailsRepyData replies={replies} />
     </VStack>
   );
 }
