@@ -3,7 +3,7 @@ import PollDto from "../dto/poll.dto.js";
 import ApiError from "../exceptions/api.error.js";
 import PollModel from "../models/poll.model.js";
 
-class LayoutSevice {
+class PollSevice {
   async createPoll(userId, title, layout) {
     const poll = new PollModel({ userId, title, layout });
 
@@ -31,10 +31,19 @@ class LayoutSevice {
     return pollsDto;
   }
 
-  async readPollDetail(code) {
+  async readPollDetail(pollId) {
+    const poll = await PollModel.findById(pollId);
+    if (!poll) {
+      throw ApiError.BadRequest(`poll with id ${pollId} is not exists`);
+    }
+    const pollDto = new PollDto(poll);
+    return pollDto;
+  }
+
+  async readPollDetailByCode(code) {
     const poll = await PollModel.findOne({ code });
     if (!poll) {
-      throw ApiError.BadRequest(`poll with id ${code} is not exists`);
+      throw ApiError.BadRequest(`poll with id ${poll._id} is not exists`);
     }
     const pollDto = new PollDto(poll);
     return pollDto;
@@ -54,4 +63,4 @@ class LayoutSevice {
   }
 }
 
-export default new LayoutSevice();
+export default new PollSevice();

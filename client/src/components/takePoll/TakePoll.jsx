@@ -56,7 +56,7 @@ function TakePoll() {
 
   const fetchPoll = useCallback(async () => {
     try {
-      const response = await request(`/api/poll/poll-details/${code}`);
+      const response = await request(`/api/poll/poll-details-by-code/${code}`);
       setDetails(response);
     } catch (e) {}
   }, [request, code, setDetails]);
