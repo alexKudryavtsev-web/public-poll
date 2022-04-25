@@ -13,6 +13,6 @@ pollRouter.post(
 );
 pollRouter.post("/close-poll/:id", authMiddleware, pollController.closePoll);
 pollRouter.get("/read-polls", authMiddleware, pollController.readPolls);
-pollRouter.get("/poll-details/:id", pollController.readPollDetails);
+pollRouter.get("/poll-details/:code", pollController.readPollDetails);
 
 export default pollRouter;

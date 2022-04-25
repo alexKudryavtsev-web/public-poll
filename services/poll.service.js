@@ -31,10 +31,10 @@ class LayoutSevice {
     return pollsDto;
   }
 
-  async readPollDetail(pollId) {
-    const poll = await PollModel.findById(pollId);
+  async readPollDetail(code) {
+    const poll = await PollModel.findOne({ code });
     if (!poll) {
-      throw ApiError.BadRequest(`poll with id ${pollId} is not exists`);
+      throw ApiError.BadRequest(`poll with id ${code} is not exists`);
     }
     const pollDto = new PollDto(poll);
     return pollDto;

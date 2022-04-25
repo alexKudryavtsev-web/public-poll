@@ -48,9 +48,9 @@ class LayoutController {
 
   async readPollDetails(req, res, next) {
     try {
-      const { id } = req.params;
+      const { code } = req.params;
 
-      const pollData = await PollService.readPollDetail(id);
+      const pollData = await PollService.readPollDetail(code);
 
       return res.json(pollData);
     } catch (e) {
