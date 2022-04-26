@@ -23,7 +23,8 @@ function PollDetails() {
         `/api/poll/close-poll/${id}`,
         "POST",
         null,
-        auth.calculateHeader()
+        auth.calculateHeader(),
+        auth
       );
       setDetails({ ...details, isOpened: false });
     } catch (e) {}
@@ -34,7 +35,8 @@ function PollDetails() {
         `/api/reply/read-replies/${id}`,
         "GET",
         null,
-        auth.calculateHeader()
+        auth.calculateHeader(),
+        auth
       );
       setReplies(response);
     } catch (e) {}
@@ -46,7 +48,8 @@ function PollDetails() {
         `/api/poll/poll-details/${id}`,
         "GET",
         null,
-        auth.calculateHeader()
+        auth.calculateHeader(),
+        auth
       );
       setDetails(response);
     } catch (e) {}

@@ -4,14 +4,28 @@ import jwt from "jsonwebtoken";
 import RefreshTokenModel from "../models/refreshToken.model.js";
 import ResetPasswordTokenModel from "../models/resetPasswordToken.model.js";
 
+const ACCESS_TOKEN_OPTIONS = {
+  expiresIn: "1h",
+};
+
+const REFRESH_TOKEN_OPTIONS = {
+  expiresIn: "30d",
+};
+
+const RESET_PASSWORD_TOKEN_OPTIONS = { expiresIn: "1h" };
+
 class TokenService {
   async generateTokens(payload) {
-    const accessToken = jwt.sign(payload, config.get("ACCESS_SECRET"), {
-      expiresIn: "1h",
-    });
-    const refreshToken = jwt.sign(payload, config.get("REFRESH_SECRET"), {
-      expiresIn: "30d",
-    });
+    const accessToken = jwt.sign(
+      payload,
+      config.get("ACCESS_SECRET"),
+      ACCESS_TOKEN_OPTIONS
+    );
+    const refreshToken = jwt.sign(
+      payload,
+      config.get("REFRESH_SECRET"),
+      REFRESH_TOKEN_OPTIONS
+    );
 
     return {
       accessToken,
@@ -20,9 +34,7 @@ class TokenService {
   }
 
   async generateAccessToken(payload) {
-    return jwt.sign(payload, config.get("ACCESS_SECRET"), {
-      expiresIn: "1h",
-    });
+    return jwt.sign(payload, config.get("ACCESS_SECRET"), ACCESS_TOKEN_OPTIONS);
   }
 
   async saveRefreshToken(userId, refreshToken) {
@@ -65,7 +77,7 @@ class TokenService {
     const resetPasswordToken = jwt.sign(
       payload,
       config.get("RESET_PASSWORD_SECRET"),
-      { expiresIn: "1h" }
+      RESET_PASSWORD_TOKEN_OPTIONS
     );
 
     return resetPasswordToken;

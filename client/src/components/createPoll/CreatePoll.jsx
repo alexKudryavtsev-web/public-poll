@@ -65,7 +65,8 @@ function CreatePoll() {
           title: title.value,
           layout: formattedLayout,
         },
-        auth.calculateHeader()
+        auth.calculateHeader(),
+        auth
       );
 
       setLayout(initialValue);

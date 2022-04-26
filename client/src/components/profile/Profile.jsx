@@ -28,7 +28,8 @@ function Profile() {
         "/api/poll/read-polls",
         "GET",
         null,
-        auth.calculateHeader()
+        auth.calculateHeader(),
+        auth
       );
       setPolls(response);
     } catch (e) {}
