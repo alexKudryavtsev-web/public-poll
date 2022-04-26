@@ -27,7 +27,7 @@ function EmailInput({ value, setValue, ...props }) {
         </InputLeftElement>
         <Input
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value.trim())}
           placeholder="email"
           {...props}
         />

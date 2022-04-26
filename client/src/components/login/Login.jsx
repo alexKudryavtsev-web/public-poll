@@ -6,13 +6,6 @@ import {
   Heading,
   VStack,
   Link,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
 
@@ -20,9 +13,10 @@ import EmailInput from "../ui/emailInput/EmailInput.jsx";
 import PasswordInput from "../ui/passwordInput/PasswordInput.jsx";
 import useHttp from "../../hooks/useHttp.js";
 import authContext from "../../contexts/AuthContext.js";
+import ErrorAlert from "../ui/errorAlert/ErrorAlert.jsx";
 
 function Login() {
-  const { request, error } = useHttp();
+  const { request, error, clearError } = useHttp();
 
   const auth = useContext(authContext);
 
@@ -69,27 +63,13 @@ function Login() {
           </Link>
         </Box>
       </VStack>
-
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={closeAlert}
+      <ErrorAlert
         isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-
-        <AlertDialogContent>
-          <AlertDialogHeader>answer from server:</AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody>{error}</AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} colorScheme="red" onClick={closeAlert}>
-              Okey
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        close={closeAlert}
+        error={error}
+        clearError={clearError}
+        cancelRef={cancelRef}
+      />
     </>
   );
 }

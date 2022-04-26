@@ -9,6 +9,7 @@ const authContext = createContext({
   logout: noop,
   refresh: noop,
   isAuth: false,
+  calculateHeader: noop,
 });
 
 export default authContext;

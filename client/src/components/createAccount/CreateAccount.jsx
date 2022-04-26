@@ -1,28 +1,15 @@
 import React, { useRef, useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Box,
-  Button,
-  Heading,
-  Spinner,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Heading, useDisclosure, VStack } from "@chakra-ui/react";
 
 import EmailInput from "../ui/emailInput/EmailInput.jsx";
 import PasswordInput from "../ui/passwordInput/PasswordInput.jsx";
 import NameInput from "../ui/nameInput/NameInput.jsx";
+import ErrorAlert from "../ui/errorAlert/ErrorAlert.jsx";
 
 import useHttp from "../../hooks/useHttp.js";
 
 function CreateAccount() {
-  const { isLoading, request, error } = useHttp();
+  const { request, error, clearError } = useHttp();
 
   const { isOpen, onOpen: openAlert, onClose: closeAlert } = useDisclosure();
   const cancelRef = useRef();
@@ -79,29 +66,16 @@ function CreateAccount() {
             create account
           </Button>
         </Box>
-        <Box alignSelf="center">{isLoading && <Spinner />}</Box>
       </VStack>
 
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={closeAlert}
+      <ErrorAlert
+        messageOnSuccess="letter sent to mail"
         isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-
-        <AlertDialogContent>
-          <AlertDialogHeader>answer from server:</AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody>{error || "letter sent to mail"}</AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} colorScheme="red" onClick={closeAlert}>
-              Okey
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        close={closeAlert}
+        clearError={clearError}
+        error={error}
+        cancelRef={cancelRef}
+      />
     </>
   );
 }

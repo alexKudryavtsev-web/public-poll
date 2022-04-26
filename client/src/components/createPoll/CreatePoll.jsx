@@ -1,12 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Button,
   Divider,
@@ -21,15 +14,18 @@ import useInput from "../../hooks/useInput.js";
 import AuthContext from "../../contexts/AuthContext.js";
 import useHttp from "../../hooks/useHttp.js";
 import LayoutElement from "./LayoutElement.jsx";
+import ErrorAlert from "../ui/errorAlert/ErrorAlert.jsx";
+
+const initialValue = [{ question: "", variants: "" }];
 
 function CreatePoll() {
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onClose: closeAlert, onOpen: openAlert } = useDisclosure();
   const cancelRef = useRef();
   const title = useInput();
   const auth = useContext(AuthContext);
   const { request, error, clearError } = useHttp();
 
-  const [layout, setLayout] = useState([{ question: "", variants: "" }]);
+  const [layout, setLayout] = useState(initialValue);
 
   function setQuestion(index, question) {
     setLayout(
@@ -69,16 +65,14 @@ function CreatePoll() {
           title: title.value,
           layout: formattedLayout,
         },
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
+        auth.calculateHeader()
       );
 
-      setLayout([{ question: "", variants: "" }]);
+      setLayout(initialValue);
       title.clear();
     } catch (e) {
     } finally {
-      onOpen();
+      openAlert();
     }
   }
 
@@ -97,15 +91,20 @@ function CreatePoll() {
           </Button>
         </HStack>
         <Box>
-          <Input placeholder="title" {...title} />
+          <Input
+            placeholder="title"
+            value={title.value}
+            onChange={title.onChange}
+          />
         </Box>
         <Divider />
         <Box>
-          <Heading size="md">layout: </Heading>
+          <Heading size="md">layout:</Heading>
         </Box>
 
         {layout.map((element, currentIndex) => (
           <LayoutElement
+            key={currentIndex}
             element={element}
             index={currentIndex}
             setQuestion={setQuestion}
@@ -113,34 +112,15 @@ function CreatePoll() {
             removeElement={removeElement}
           />
         ))}
-        <AlertDialog
-          motionPreset="slideInBottom"
-          leastDestructiveRef={cancelRef}
-          onClose={onClose}
-          isOpen={isOpen}
-          isCentered
-        >
-          <AlertDialogOverlay />
-
-          <AlertDialogContent>
-            <AlertDialogHeader>answer from server:</AlertDialogHeader>
-            <AlertDialogCloseButton />
-            <AlertDialogBody>{error || "Poll is created"}</AlertDialogBody>
-            <AlertDialogFooter>
-              <Button
-                ref={cancelRef}
-                colorScheme="red"
-                onClick={() => {
-                  clearError();
-                  onClose();
-                }}
-              >
-                Okey
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </VStack>
+      <ErrorAlert
+        messageOnSuccess="poll is created"
+        isOpen={isOpen}
+        close={closeAlert}
+        clearError={clearError}
+        error={error}
+        cancelRef={cancelRef}
+      />
     </>
   );
 }

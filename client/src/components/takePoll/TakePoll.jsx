@@ -1,19 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Button,
-  Center,
   Heading,
   Radio,
   RadioGroup,
-  Spinner,
   Stack,
   useDisclosure,
   VStack,
@@ -23,6 +14,9 @@ import { useParams } from "react-router-dom";
 import useHttp from "../../hooks/useHttp.js";
 import EmailInput from "../ui/emailInput/EmailInput.jsx";
 import formatQuestion from "../../utils/formatQuestion.js";
+import CenterOnPage from "../ui/centerOnPage/CenterOnPage.jsx";
+import ErrorAlert from "../ui/errorAlert/ErrorAlert.jsx";
+import Loader from "../ui/loader/Loader.jsx";
 
 function TakePoll() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -66,32 +60,14 @@ function TakePoll() {
   }, [fetchPoll]);
 
   if (isLoading) {
-    return (
-      <Center
-        position="absolute"
-        top={0}
-        left={0}
-        zIndex={-100}
-        width="100vw"
-        height="100vh"
-      >
-        <Spinner />
-      </Center>
-    );
+    return <Loader />;
   }
 
   if (details && !details.isOpened) {
     return (
-      <Center
-        position="absolute"
-        top={0}
-        left={0}
-        zIndex={-100}
-        width="100vw"
-        height="100vh"
-      >
+      <CenterOnPage>
         <Heading>{details.title} is close</Heading>
-      </Center>
+      </CenterOnPage>
     );
   }
 
@@ -130,35 +106,14 @@ function TakePoll() {
           </Button>
         </Box>
       </VStack>
-      <AlertDialog
-        motionPreset="slideInBottom"
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
+      <ErrorAlert
         isOpen={isOpen}
-        isCentered
-      >
-        <AlertDialogOverlay />
-
-        <AlertDialogContent>
-          <AlertDialogHeader>answer from server:</AlertDialogHeader>
-          <AlertDialogCloseButton />
-          <AlertDialogBody>
-            {error || "Thank you for participating in the poll"}
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button
-              ref={cancelRef}
-              colorScheme="red"
-              onClick={() => {
-                clearError();
-                onClose();
-              }}
-            >
-              Okey
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        close={onClose}
+        error={error}
+        clearError={clearError}
+        cancelRef={cancelRef}
+        messageOnSuccess="Thank you for participating in the poll"
+      />
     </>
   );
 }

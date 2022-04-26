@@ -1,18 +1,12 @@
-import { Center } from "@chakra-ui/react";
 import React from "react";
 import ForgotPassword from "../components/forgotPassword/ForgotPassword.jsx";
+import CenterOnPage from "../components/ui/centerOnPage/CenterOnPage.jsx";
 
 function ForgotPasswordPage() {
   return (
-    <Center
-      position="absolute"
-      top={0}
-      width="100vw"
-      height="100vh"
-      zIndex={-100}
-    >
+    <CenterOnPage>
       <ForgotPassword />
-    </Center>
+    </CenterOnPage>
   );
 }
 

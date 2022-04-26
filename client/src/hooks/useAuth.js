@@ -30,5 +30,11 @@ export default function useAuth() {
     }
   }, [login]);
 
-  return { login, logout, token, user };
+  function calculateHeader() {
+    return {
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  return { login, logout, token, user, calculateHeader };
 }

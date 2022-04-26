@@ -9,13 +9,12 @@ import {
   Link,
   VStack,
   Heading,
-  Center,
-  Spinner,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Link as NavLink } from "react-router-dom";
 import AuthContext from "../../contexts/AuthContext.js";
 import useHttp from "../../hooks/useHttp.js";
+import Loader from "../ui/loader/Loader.jsx";
 
 function Profile() {
   const auth = useContext(AuthContext);
@@ -25,30 +24,22 @@ function Profile() {
 
   const fetchPolls = useCallback(async () => {
     try {
-      const response = await request("/api/poll/read-polls", "GET", null, {
-        Authorization: `Bearer ${auth.token}`,
-      });
+      const response = await request(
+        "/api/poll/read-polls",
+        "GET",
+        null,
+        auth.calculateHeader()
+      );
       setPolls(response);
     } catch (e) {}
-  }, [request, auth.token]);
+  }, [request, auth, setPolls]);
 
   useEffect(() => {
     fetchPolls();
   }, [fetchPolls]);
 
   if (!polls) {
-    return (
-      <Center
-        position="absolute"
-        top={0}
-        width="100vw"
-        height="100vh"
-        zIndex={-100}
-        left="0"
-      >
-        <Spinner />
-      </Center>
-    );
+    return <Loader />;
   }
 
   return (

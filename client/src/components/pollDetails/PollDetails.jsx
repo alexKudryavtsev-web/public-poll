@@ -1,4 +1,4 @@
-import { Box, Button, Center, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Button, VStack } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -7,6 +7,7 @@ import useHttp from "../../hooks/useHttp.js";
 
 import PollDetailsMetaData from "../pollDetailsMetaData/PollDetailsMetaData.jsx";
 import PollDetailsRepyData from "../pollDetailsReplyData/PollDetailsRepyData.jsx";
+import Loader from "../ui/loader/Loader.jsx";
 
 function PollDetails() {
   const { id } = useParams();
@@ -18,9 +19,12 @@ function PollDetails() {
 
   async function closePollBtnHandler() {
     try {
-      await request(`/api/poll/close-poll/${id}`, "POST", null, {
-        Authorization: `Bearer ${auth.token}`,
-      });
+      await request(
+        `/api/poll/close-poll/${id}`,
+        "POST",
+        null,
+        auth.calculateHeader()
+      );
       setDetails({ ...details, isOpened: false });
     } catch (e) {}
   }
@@ -30,13 +34,11 @@ function PollDetails() {
         `/api/reply/read-replies/${id}`,
         "GET",
         null,
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
+        auth.calculateHeader()
       );
       setReplies(response);
     } catch (e) {}
-  }, []);
+  }, [request, auth, setReplies, id]);
 
   const fetchPollDetails = useCallback(async () => {
     try {
@@ -44,13 +46,11 @@ function PollDetails() {
         `/api/poll/poll-details/${id}`,
         "GET",
         null,
-        {
-          Authorization: `Bearer ${auth.token}`,
-        }
+        auth.calculateHeader()
       );
       setDetails(response);
     } catch (e) {}
-  }, [request, auth.token]);
+  }, [request, auth, setDetails, id]);
 
   useEffect(() => {
     fetchPollDetails();
@@ -61,18 +61,7 @@ function PollDetails() {
   }, [fetchReply]);
 
   if (isLoading || !details || !replies) {
-    return (
-      <Center
-        position="absolute"
-        top={0}
-        width="100vw"
-        height="100vh"
-        zIndex={-100}
-        left={0}
-      >
-        <Spinner />
-      </Center>
-    );
+    return <Loader />;
   }
   return (
     <VStack align="stretch" paddingBottom={10}>
