@@ -145,7 +145,9 @@ class AuthService {
     EmailService.sendActivationResetPasswordMail(
       email,
       user.firstname,
-      `${config.get("API_URL")}/set-new-password/${activationResetPasswordLink}`
+      `${config.get(
+        "CLIENT_URL"
+      )}/set-new-password/${activationResetPasswordLink}`
     );
 
     await RefreshTokenModel.deleteOne({ userId: user._id });
