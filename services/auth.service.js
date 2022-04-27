@@ -57,7 +57,7 @@ class AuthService {
     EmailService.sendActivationUserMail(
       email,
       user.firstname,
-      `${config.get("API_URL")}/auth/activateUser/${activationUserLink}`
+      `${config.get("API_URL")}/auth/activate-user/${activationUserLink}`
     );
 
     const userDto = new UserDto(user);

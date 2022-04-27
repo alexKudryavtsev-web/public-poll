@@ -1,5 +1,12 @@
 import React, { useRef, useState } from "react";
-import { Box, Button, Heading, useDisclosure, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
 
 import EmailInput from "../ui/emailInput/EmailInput.jsx";
 import PasswordInput from "../ui/passwordInput/PasswordInput.jsx";
@@ -10,6 +17,7 @@ import useHttp from "../../hooks/useHttp.js";
 
 function CreateAccount() {
   const { request, error, clearError } = useHttp();
+  const [isRequestEnd, setIsRequestEnd] = useState(false);
 
   const { isOpen, onOpen: openAlert, onClose: closeAlert } = useDisclosure();
   const cancelRef = useRef();
@@ -27,6 +35,16 @@ function CreateAccount() {
         firstname,
         lastname,
       });
+      setIsRequestEnd(true);
+    } catch (e) {
+    } finally {
+      openAlert();
+    }
+  }
+
+  async function resetMailBtnHander() {
+    try {
+      await request("/api/auth/reset-activation-user-mail", "POST", { email });
     } catch (e) {
     } finally {
       openAlert();
@@ -66,6 +84,17 @@ function CreateAccount() {
             create account
           </Button>
         </Box>
+        {isRequestEnd && (
+          <Center>
+            <Button
+              onClick={resetMailBtnHander}
+              color="blue.300"
+              variant="ghost"
+            >
+              reset mail
+            </Button>
+          </Center>
+        )}
       </VStack>
 
       <ErrorAlert

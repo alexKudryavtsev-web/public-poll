@@ -70,13 +70,8 @@ function MainHeader({ isAuth, ...props }) {
         mt={{ base: 4, md: 0 }}
       >
         <Box>
-          <Text as={Link} to="/docs">
-            Docs
-          </Text>
-        </Box>
-        <Box>
-          <Text as={Link} to="/examples">
-            Examples
+          <Text as={Link} to="/example">
+            example
           </Text>
         </Box>
       </Stack>
